@@ -18,7 +18,7 @@ class IntegratedSensorSuiteTest {
     void setUp() throws Exception {
         ISSTest = new IntegratedSensorSuite(1);
         
-        testSensorData = new HashMap<String, Double>();
+        testSensorData = new HashMap<String, Double>(); 
     }
 	
 	@Test
