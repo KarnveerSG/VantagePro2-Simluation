@@ -57,7 +57,7 @@ public class AnemometerSensor extends Thread implements Serializable {
 	/** A boolean to determine if the thread should sleep. */
 	private volatile boolean cancel;
 	
-	/** A Random object to generate data for the Rain Collector. */
+	/** A Random object to generate data. */
 	private final Random rand;
 	
 	/**

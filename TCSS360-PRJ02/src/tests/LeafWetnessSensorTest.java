@@ -24,7 +24,7 @@ class LeafWetnessSensorTest {
 	private LeafWetnessSensor LWS;
 
 	/**
-	 * Initializes the Anemometer Sensor object and its thread
+	 * Initializes the Leaf Wetness Sensor object and its thread
 	 * @throws Exception
 	 */
 	@BeforeEach
@@ -34,7 +34,7 @@ class LeafWetnessSensorTest {
 	}
 	
 	/**
-	 * Tests if the anemometer sensor object is not null
+	 * Tests if the leaf wetness sensor object is not null
 	 */
 	@Test
 	void testLeafWetnessSensor() {
