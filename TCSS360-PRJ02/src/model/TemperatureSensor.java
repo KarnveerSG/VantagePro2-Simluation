@@ -1,12 +1,20 @@
 package model;
+import java.io.Serializable;
 import java.util.Random;
+
+import application.Main;
 
 /**
  * This is a temperature sensor.
  * @author Karnveer Gill
  * @version 1 - July 2020
  */
-public class TemperatureSensor extends Thread {
+public class TemperatureSensor extends Thread implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	/**
 	 * This is used to determine whether the sensor is generating new data or not.
 	 */
@@ -33,22 +41,22 @@ public class TemperatureSensor extends Thread {
 	private double outerTemperature;
 
 	/**
-	 * Minimum for the inner temperature range in Fahrenheit (°F).
+	 * Minimum for the inner temperature range in Fahrenheit (ï¿½F).
 	 */
 	private final double MININNERTEMPERATURE = 32; //
 	
 	/**
-	 * Maximum for the inner temperature range in Fahrenheit (°F).
+	 * Maximum for the inner temperature range in Fahrenheit (ï¿½F).
 	 */
 	private final double MAXINNERTEMPERATURE = 140;
 	
 	/**
-	 * Minimum for the outer temperature range in Fahrenheit (°F).
+	 * Minimum for the outer temperature range in Fahrenheit (ï¿½F).
 	 */
 	private final double MINOUTERTEMPERATURE = -40;
 	
 	/**
-	 * Maximum for the outer temperature range in Fahrenheit (°F).
+	 * Maximum for the outer temperature range in Fahrenheit (ï¿½F).
 	 */
 	private final double MAXOUTERTEMPERATURE = 150; 
 
@@ -64,7 +72,7 @@ public class TemperatureSensor extends Thread {
 	}
 	
 	/**
-	 * This generates a random value for inner temperature(°F).
+	 * This generates a random value for inner temperature(ï¿½F).
 	 */
 	private void setInnerTemperature() {
 		final Random r = new Random();
@@ -72,7 +80,7 @@ public class TemperatureSensor extends Thread {
 	}
 
 	/**
-	 * This returns the inner temperature(°F).
+	 * This returns the inner temperature(ï¿½F).
 	 * @return double - inner temperature
 	 */
 	public Double getInnerTemperature() {
@@ -80,7 +88,7 @@ public class TemperatureSensor extends Thread {
 	}
 
 	/**
-	 * This generates a random value for outer temperature(°F).
+	 * This generates a random value for outer temperature(ï¿½F).
 	 */
 	private void setOuterTemperature() {
 		final Random r = new Random();
@@ -88,7 +96,7 @@ public class TemperatureSensor extends Thread {
 	}
 
 	/**
-	 * This returns the outer temperature(°F).
+	 * This returns the outer temperature(ï¿½F).
 	 * @return double - outer temperature
 	 */
 	public Double getOuterTemperature() {
@@ -104,6 +112,7 @@ public class TemperatureSensor extends Thread {
 			if(!cancel) {
 				setOuterTemperature();
 				setInnerTemperature();
+				Main.serialization("Temperature_S.txt", this);
 				for(int i = 0; i < updateInnerInterval/updateOuterInterval - 1; i++) { //Looped 6 times with 10 second waits = 60 seconds
 					Thread.sleep(updateOuterInterval * 1000);					   //Sets inner temperature every 60 seconds
 					setOuterTemperature();										   //Sets outer temperature every 10 seconds

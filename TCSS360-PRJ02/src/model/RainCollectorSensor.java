@@ -1,6 +1,9 @@
 package model;
 
+import java.io.Serializable;
 import java.util.Random;
+
+import application.Main;
 
 /**
  * The Rain Collector sensor measures rainfall and rain rate. Rainfall can be measured in 
@@ -11,8 +14,13 @@ import java.util.Random;
  * @version July 2020
  *
  */
-public class RainCollectorSensor extends Thread {
+public class RainCollectorSensor extends Thread implements Serializable {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	/** minimum rainfall value (the same regardless of units) */
 	public static final double MIN_RAINFALL = 0;
 	
@@ -185,6 +193,7 @@ public class RainCollectorSensor extends Thread {
 				if(!cancel) {
 					setRainFall(time, units);
 					setRainRate(units);
+					Main.serialization("RainCollector_S.txt", this);
 					Thread.sleep(INTERVAL * 1000);
 				} else {
 					Thread.sleep(1000);

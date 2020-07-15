@@ -1,6 +1,9 @@
 package model;
 
+import java.io.Serializable;
 import java.util.Random;
+
+import application.Main;
 
 /**
  * The Anemometer sensor measures wind direction and wind speed. Wind direction is measured in degrees
@@ -11,7 +14,12 @@ import java.util.Random;
  * @version July 2020
  *
  */
-public class AnemometerSensor extends Thread {
+public class AnemometerSensor extends Thread implements Serializable {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 
 	/** minimum wind direction value in degrees */
 	public static final int MIN_WIND_DIRECTION = 1;
@@ -150,9 +158,8 @@ public class AnemometerSensor extends Thread {
 				if(!cancel) {
 					setWindDirection();
 					setWindSpeed(units);
-					Thread.sleep(INTERVAL * 1000);
-					
-					System.out.println("updating");
+					Main.serialization("Anemometer_S.txt", this);
+					Thread.sleep(INTERVAL * 1000);					
 				} else {
 					Thread.sleep(1000);
 				}

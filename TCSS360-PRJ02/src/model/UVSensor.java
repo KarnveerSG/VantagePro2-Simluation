@@ -1,10 +1,18 @@
 package model;
+import java.io.Serializable;
 import java.util.Random;
+
+import application.Main;
 /**
  * This is a UV sensor
  * @author Karnveer Gill
  */
-public class UVSensor extends Thread {
+public class UVSensor extends Thread implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	/**
 	 * This is used to determine whether the sensor is generating new data or not.
 	 */
@@ -96,8 +104,9 @@ public class UVSensor extends Thread {
 			if(!cancel) {
 				setUVDose();
 				setUVIndex();
+				Main.serialization("UV_S.txt", this);
 				Thread.sleep(updateInterval * 1000);
-				System.out.println("Sensor: " + getUVDose() + getUVIndex());
+				//System.out.println("Sensor: " + getUVDose() + getUVIndex());
 			} else {
 				Thread.sleep(1000);
 			}
