@@ -1,11 +1,19 @@
 package model;
+import java.io.Serializable;
 import java.util.Random;
+
+import application.Main;
 /**
  * This represents a humidity sensor. 
  * @author Karnveer Gill & Albert Lin
  * @version 1 - July 2020
  */
-public class HumiditySensor extends Thread {
+public class HumiditySensor extends Thread implements Serializable  {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	/**
 	 * This is used to determine whether the sensor is generating new data or not.
 	 */
@@ -87,6 +95,8 @@ public class HumiditySensor extends Thread {
 			if(!cancel) {
 				setInnerHumidity();
 				setOuterHumidity();
+				Main.serialization("Humidity_S.txt", this);
+				
 				Thread.sleep(updateInterval * 1000);
 			} else {
 				Thread.sleep(1000);
