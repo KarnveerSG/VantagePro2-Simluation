@@ -7,6 +7,8 @@ import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import application.Main;
+
 
 /**
  * ISS will start sensor threads and collect data from them periodically to send 
@@ -35,7 +37,7 @@ public class IntegratedSensorSuite extends Thread implements Serializable {
 	public static Timer timer;
 	
 	//Sensor objects (transient, since we just want the data sent to GUI, not the objects)
-    //public transient HumiditySensor myHumiditySensor;
+    public transient HumiditySensor myHumiditySensor;
     
     /*
      * Put the other sensors here
@@ -49,8 +51,9 @@ public class IntegratedSensorSuite extends Thread implements Serializable {
     public HashMap<String, Double> sensorData;
     
     public IntegratedSensorSuite(int id) {
-    	transmitterID = id;   	
-    	//myHumiditySensor = new HumiditySensor();
+    	transmitterID = id;
+    	
+    	myHumiditySensor = new HumiditySensor();
     	
     	/*
     	 * construct all sensors here
@@ -92,7 +95,7 @@ public class IntegratedSensorSuite extends Thread implements Serializable {
     	sensorData.put("UVIndex", 0.0);
     	sensorData.put("UVDose", 0.0);
     	sensorData.put("InnerHumidity", 0.0);
-    	sensorData.put("OuterHumidity", 0.0); //((HumiditySensor) Main.deserialization("Humidity_S.txt")).getOuterHumidity());
+    	sensorData.put("OuterHumidity", ((HumiditySensor) Main.deserialization("Humidity_S.txt")).getOuterHumidity());
     	
     	sensorData.put("Evotranspiration", 0.0);
     	sensorData.put("LeafWetness", 0.0);
@@ -145,7 +148,7 @@ public class IntegratedSensorSuite extends Thread implements Serializable {
      * Starts all threads. Called during run().
      */
     private void startSensors() {
-    	//myHumiditySensor.start();
+    	myHumiditySensor.start();
     	/*
     	 * other sensors here
     	 */
@@ -157,14 +160,14 @@ public class IntegratedSensorSuite extends Thread implements Serializable {
     @Override
     public void run() {
     	startSensors();
-    	System.out.println("sensors started");
+    	System.out.println("Sensors started\n");
     	
     	timer = new Timer();
 		timer.scheduleAtFixedRate(new TimerTask() {
 			public void run() {
 				updateData();
 				enableSensors();
-				//System.out.println(sensorData.get("OuterHumidity"));
+				System.out.println(sensorData.get("OuterHumidity"));
 			}
 		}, 0, 3000);	
 	

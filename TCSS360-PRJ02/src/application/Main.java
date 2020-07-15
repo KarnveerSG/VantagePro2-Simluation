@@ -45,7 +45,7 @@ public class Main {
 	              out.close(); 
 	              file.close(); 
 	                
-	              //System.out.println("Object has been serialized"); 
+	              System.out.println("Object has been serialized \n"); 
 	    
 	          } 
 	            
@@ -65,7 +65,7 @@ public class Main {
 	      {    
 	          // Reading the object from a file 
 	          FileInputStream file = new FileInputStream(theFilePath); 
-	          ObjectInputStream in = new ObjectInputStream(file); 
+	          ObjectInputStream in = new ObjectInputStream(file);
 	            
 	          // Method for deserialization of object 
 	          Object deserial = (Object) in.readObject(); 
@@ -78,13 +78,13 @@ public class Main {
 	        
 	      catch(IOException ex) 
 	      { 
-	          System.out.println("IOException is caught");
+	          System.out.println("IOException is caught in ds");
 	          return ex;
 	      } 
 	        
 	      catch(ClassNotFoundException ex) 
 	      { 
-	          System.out.println("ClassNotFoundException is caught");
+	          System.out.println("ClassNotFoundException is caught in ds");
 	          return ex;
 	      } 
 	  }
