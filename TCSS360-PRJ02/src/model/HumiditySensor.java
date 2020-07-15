@@ -95,6 +95,7 @@ public class HumiditySensor extends Thread implements Serializable  {
 			if(!cancel) {
 				setInnerHumidity();
 				setOuterHumidity();
+				//System.out.println("Humidity Update ding");
 				Main.serialization("Humidity_S.txt", this);
 				
 				Thread.sleep(updateInterval * 1000);
