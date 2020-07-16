@@ -16,7 +16,7 @@ class IntegratedSensorSuiteTest {
 
 	@BeforeEach
     void setUp() throws Exception {
-        ISSTest = new IntegratedSensorSuite(1);
+        ISSTest = new IntegratedSensorSuite(1, 200);
         
         testSensorData = new HashMap<String, Double>(); 
     }
@@ -29,8 +29,10 @@ class IntegratedSensorSuiteTest {
 		assertEquals(ISSTest.getTransmitterId(), 1);
 		ISSTest.setTransmitterId(3);
 		assertEquals(ISSTest.getTransmitterId(), 3);
+		ISSTest.updateData();
 		
 		ISSTest.start();
+		
 		ISSTest.interrupt();
 	}
 

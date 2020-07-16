@@ -36,6 +36,11 @@ public class IntegratedSensorSuite extends Thread implements Serializable {
 	 */
 	public static Timer timer;
 	
+	/**
+	 * Altitude at startup
+	 */
+	public int alt;
+	
 	//Sensor objects (transient, since we just want the data sent to GUI, not the objects)
     public transient HumiditySensor myHumiditySensor;
     public transient AnemometerSensor myAnemometerSensor;
@@ -52,8 +57,14 @@ public class IntegratedSensorSuite extends Thread implements Serializable {
      */
     public HashMap<String, Double> sensorData;
     
-    public IntegratedSensorSuite(int id) {
+    /**
+     * Constructs the ISS which in turn constructs the sensor classes.
+     * @param id  Transmitter ID as each console can receive up to 8 suites
+     * @param altitude The altitude used in barometric calculations
+     */
+    public IntegratedSensorSuite(int id, int altitude) {
     	transmitterID = id;
+    	alt = altitude;
     	
     	myHumiditySensor = new HumiditySensor();
     	myAnemometerSensor = new AnemometerSensor();
@@ -82,36 +93,105 @@ public class IntegratedSensorSuite extends Thread implements Serializable {
     	sensorData.put("SoilMoisture", 0.0);
     	sensorData.put("Dewpoint", 0.0);
     	sensorData.put("WindChill", 0.0);
-    	sensorData.put("HeatIndex", 0.0);	
-    	
+    	sensorData.put("HeatIndex", 0.0);    	
     }
     
     /**
      * Calls periodically to poll the sensor data and update the map
      */
     public void updateData() {
+    	//Some new objects constructed to hold deserial data if they are used in other calculations
+    	AnemometerSensor dataAnemometer = ((AnemometerSensor) Main.deserialization("Anemometer_S.txt"));
+    	TemperatureSensor dataTemp = ((TemperatureSensor) Main.deserialization("Temperature_S.txt"));
+    	HumiditySensor dataHum = ((HumiditySensor) Main.deserialization("Humidity_S.txt"));
+    	
     	sensorData.put("RainFall", ((RainCollectorSensor) Main.deserialization("RainCollector_S.txt")).getRainFall());
     	sensorData.put("RainRate", ((RainCollectorSensor) Main.deserialization("RainCollector_S.txt")).getRainRate());
-    	sensorData.put("WindSpeed", ((AnemometerSensor) Main.deserialization("Anemometer_S.txt")).getWindSpeed());
-    	sensorData.put("WindDirection", (double) ((AnemometerSensor) Main.deserialization("Anemometer_S.txt")).getWindDirection());
-    	sensorData.put("InnerTemp", ((TemperatureSensor) Main.deserialization("Temperature_S.txt")).getInnerTemperature());
-    	sensorData.put("OuterTemp", ((TemperatureSensor) Main.deserialization("Temperature_S.txt")).getOuterTemperature());
+    	sensorData.put("WindSpeed", dataAnemometer.getWindSpeed());
+    	sensorData.put("WindDirection", (double) dataAnemometer.getWindDirection());
+    	sensorData.put("InnerTemp", dataTemp.getInnerTemperature());
+    	sensorData.put("OuterTemp", dataTemp.getOuterTemperature());
     	sensorData.put("UVIndex", ((UVSensor) Main.deserialization("UV_S.txt")).getUVIndex());
     	sensorData.put("UVDose", ((UVSensor) Main.deserialization("UV_S.txt")).getUVDose());
-    	sensorData.put("InnerHumidity", ((HumiditySensor) Main.deserialization("Humidity_S.txt")).getInnerHumidity());
-    	sensorData.put("OuterHumidity", ((HumiditySensor) Main.deserialization("Humidity_S.txt")).getOuterHumidity());
+    	sensorData.put("InnerHumidity", dataHum.getInnerHumidity());
+    	sensorData.put("OuterHumidity", dataHum.getOuterHumidity());
     	sensorData.put("LeafWetness", (double) ((LeafWetnessSensor) Main.deserialization("LeafWetness_S.txt")).getLeafWetness());
     	sensorData.put("SoilMoisture", ((SoilMoistureSensor) Main.deserialization("SoilMoisture_S.txt")).getSoilMoisture());
     	
-    	sensorData.put("Barometer", 0.0);
-    	sensorData.put("Evotranspiration", 0.0);
-    	sensorData.put("Dewpoint", 0.0);
-    	sensorData.put("WindChill", 0.0);
-    	sensorData.put("HeatIndex", 0.0);
+    	//Updates all the calculated variables as per the document "Derived Variables in Davis Weather Products"
     	
-    	//System.out.println(sensorData.get("OuterHumidity"));
+    	/*Wind Chill
+    	 * param: outside air temp, wind speed (Imperial units)
+    	 * W = 35.74 + 0.6215*T - 35.75 * (V^0.16) + 0.4275 * (V^0.16)
+    	 * (Note: include units accountence later? If there's time)
+    	 */
+    	double V = dataAnemometer.getWindSpeed();
+    	double T = dataTemp.getOuterTemperature();
+    	sensorData.put("WindChill", 35.74 + 0.6215*T - 35.75 * (Math.pow(V, 0.16)) + 0.4275 * (Math.pow(V, 0.16)));
+    	
+    	/*Heat index
+    	 * param: outside air temp, outside humidity.
+    	 * Using a formula that mimics the index table
+    	 * HI = -42.379 + 2.04901523*T + 10.14333127*RH - .22475541*T*RH - .00683783*T*T - .05481717*RH*RH + .00122874*T*T*RH + .00085282*T*RH*RH - .00000199*T*T*RH*RH
+    	 * If RH is < 13%, subtract this adjustment A = [(13-RH)/4]*SQRT{[17-ABS(T-95.)]/17}
+    	 * if RH > 85%, add this adjustment A = [(RH-85)/10] * [(87-T)/5]
+    	 * 
+    	 * Note: Due to the randomized sensor data, there can be some wacky heat indexes given.
+    	 */
+    	T = dataTemp.getOuterTemperature();
+    	double RH = dataHum.getOuterHumidity();
+    	double A = 0.0;
+    	if(RH < 13) {
+    		A = ((13-RH)/4) * Math.sqrt((17-Math.abs(T-95))/17);
+    		A *= -1;
+    	}
+    	else if(RH > 85) {
+    		A = ((RH-85)/10) * ((87-T)/5);
+    	}    	
+    	sensorData.put("HeatIndex", (-42.379 + 2.04901523*T + 10.14333127*RH - 0.22475541*T*RH - 0.00683783*T*T - 0.05481717*RH*RH + 0.00122874*T*T*RH + 0.00085282*T*RH*RH - 0.00000199*T*T*RH*RH) + A);
+    	
+    	/*Dewpoint
+    	 * param: outside temp, outside humidity
+    	 * vapor pressure = RH*0.01*6.112*Math.pow(17.62*T, (T+243.12));
+    	 * D = (243.12*(ln v) - 440.1)/(19.43 -ln v)
+    	 */
+    	T = dataTemp.getOuterTemperature();
+    	RH = dataHum.getOuterHumidity();
+    	double VP = RH*0.01*6.112*Math.exp((17.62*T) / (T+243.12));
+    	double Numerator = (243.12*(Math.log(VP)) - 440.1);
+    	double Denominator = (19.43 - (Math.log(VP))); 	
+    	sensorData.put("Dewpoint", Numerator/Denominator);
+    	
+    	/*Barometric pressure
+    	 * param:outside air, outside humidity, elevation, atmospheric pressure
+    	 * 
+    	 * Note that atmospheric pressure is a sensor located on the console main circuit board according
+    	 * to documentation. We'll implement  pressure sensing when GUI is up. In the mean time,
+    	 * we'll use 14.35 PSI (approx. PSI at 200 ft).
+    	 * 
+    	 * Psl = Ps * (R)
+    	 * Tv = T + 460 + L
+    	 * L = 11 * alt/8000
+    	 * R = 10 ^ (Math.exp(alt/(122.8943111*Tv)); 
+    	 */
+    	double Ps = 14.35; //supposed to get pressure from console here
+    	int a = alt;
+    	sensorData.put("Barometer", Ps * (Math.pow(10, ( Math.exp(a / (122.8943111 * ( T + 460 + (11* a/8000))))))));
+    	
+    	/*Evotranspiration
+    	 * Note: requires optional solar radiation sensor. We've already included several optional
+    	 * sensors at this point. If we have the time to implement radiation sensor and ET, we will, but
+    	 * this currently has _lower priority_.
+    	 * 
+    	 * Note that atmospheric pressure is a sensor located on the console main circuit board according
+    	 * to documentation. We'll implement  pressure sensing when GUI is up. In the mean time,
+    	 * we'll use 14.35 PSI (approx. PSI at 200 ft).
+    	 * 
+    	 * Param: air temp, wind speed, *solar radiation*, humidity, air pressure (from console)
+    	 * 
+    	 */	
+    	sensorData.put("Evotranspiration", 0.0);
     }    
-    
     
     /**
      * enables/disables sensors according to a map of sensornames and booleans from the GUI
@@ -180,7 +260,5 @@ public class IntegratedSensorSuite extends Thread implements Serializable {
 				//System.out.println(sensorData.get("OuterHumidity"));
 			}
 		}, 0, 3000);	
-	
-    }
-	
+    }	
 }

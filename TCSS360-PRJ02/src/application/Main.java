@@ -14,7 +14,7 @@ public class Main {
 
 	public static void main(String[] args) {		
 		//Start ISS on its own thread
-		new Thread(new IntegratedSensorSuite(1)).start();
+		new Thread(new IntegratedSensorSuite(1, 300)).start();
 		
 		//Start GUI on its own thread
 		//new Thread(new GUI())).start();
