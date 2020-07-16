@@ -1,5 +1,6 @@
 package application;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -45,7 +46,7 @@ public class Main {
 	              out.close(); 
 	              file.close(); 
 	                
-	              System.out.println("Object has been serialized \n"); 
+	              //System.out.println("Object has been serialized: " + theFilePath); 
 	    
 	          } 
 	            
@@ -61,6 +62,7 @@ public class Main {
 	   * @param theFilePath
 	   */
 	  public static Object deserialization(String theFilePath) {
+		  File f = new File(theFilePath);
 	      try
 	      {    
 	          // Reading the object from a file 
@@ -72,13 +74,14 @@ public class Main {
 	            
 	          in.close(); 
 	          file.close(); 
+	          //System.out.println("Object has been Deserialized. S-file length: " + f.length());
 	            
 	          return deserial;
 	      } 
 	        
 	      catch(IOException ex) 
-	      { 
-	          System.out.println("IOException is caught in ds");
+	      {	    	  
+	          System.out.println("IOException is caught in ds. S-file length: " + f.length() + " " + theFilePath);
 	          return ex;
 	      } 
 	        

@@ -38,10 +38,12 @@ public class IntegratedSensorSuite extends Thread implements Serializable {
 	
 	//Sensor objects (transient, since we just want the data sent to GUI, not the objects)
     public transient HumiditySensor myHumiditySensor;
-    
-    /*
-     * Put the other sensors here
-     */
+    public transient AnemometerSensor myAnemometerSensor;
+    public transient LeafWetnessSensor myLeafWetnessSensor;
+    public transient RainCollectorSensor myRainCollectorSensor;
+    public transient SoilMoistureSensor mySoilMoistureSensor;
+    public transient TemperatureSensor myTemperatureSensor;
+    public transient UVSensor myUVSensor;
     
     /**
      * This data field will hold a map of sensor names and their relevant data readings
@@ -54,10 +56,12 @@ public class IntegratedSensorSuite extends Thread implements Serializable {
     	transmitterID = id;
     	
     	myHumiditySensor = new HumiditySensor();
-    	
-    	/*
-    	 * construct all sensors here
-    	 */
+    	myAnemometerSensor = new AnemometerSensor();
+        myLeafWetnessSensor = new LeafWetnessSensor();
+        myRainCollectorSensor = new RainCollectorSensor();
+        mySoilMoistureSensor = new SoilMoistureSensor();
+        myTemperatureSensor = new TemperatureSensor();
+        myUVSensor = new UVSensor();
     	
     	//Setup map of <variable, value>
     	sensorData = new HashMap<String, Double>();
@@ -71,8 +75,8 @@ public class IntegratedSensorSuite extends Thread implements Serializable {
     	sensorData.put("UVIndex", 0.0);
     	sensorData.put("UVDose", 0.0);
     	sensorData.put("InnerHumidity", 0.0);
-    	sensorData.put("OuterHumidity", 0.0);
-    	
+    	sensorData.put("OuterHumidity", 0.0);    	
+    	sensorData.put("Barometer", 0.0);
     	sensorData.put("Evotranspiration", 0.0);
     	sensorData.put("LeafWetness", 0.0);
     	sensorData.put("SoilMoisture", 0.0);
@@ -85,24 +89,27 @@ public class IntegratedSensorSuite extends Thread implements Serializable {
     /**
      * Calls periodically to poll the sensor data and update the map
      */
-    public void updateData() {    	
-    	sensorData.put("RainFall", 0.0);
-    	sensorData.put("RainRate", 0.0);
-    	sensorData.put("WindSpeed", 0.0);
-    	sensorData.put("WindDirection", 0.0);
-    	sensorData.put("InnerTemp", 0.0);
-    	sensorData.put("OuterTemp", 0.0);
-    	sensorData.put("UVIndex", 0.0);
-    	sensorData.put("UVDose", 0.0);
-    	sensorData.put("InnerHumidity", 0.0);
+    public void updateData() {
+    	sensorData.put("RainFall", ((RainCollectorSensor) Main.deserialization("RainCollector_S.txt")).getRainFall());
+    	sensorData.put("RainRate", ((RainCollectorSensor) Main.deserialization("RainCollector_S.txt")).getRainRate());
+    	sensorData.put("WindSpeed", ((AnemometerSensor) Main.deserialization("Anemometer_S.txt")).getWindSpeed());
+    	sensorData.put("WindDirection", (double) ((AnemometerSensor) Main.deserialization("Anemometer_S.txt")).getWindDirection());
+    	sensorData.put("InnerTemp", ((TemperatureSensor) Main.deserialization("Temperature_S.txt")).getInnerTemperature());
+    	sensorData.put("OuterTemp", ((TemperatureSensor) Main.deserialization("Temperature_S.txt")).getOuterTemperature());
+    	sensorData.put("UVIndex", ((UVSensor) Main.deserialization("UV_S.txt")).getUVIndex());
+    	sensorData.put("UVDose", ((UVSensor) Main.deserialization("UV_S.txt")).getUVDose());
+    	sensorData.put("InnerHumidity", ((HumiditySensor) Main.deserialization("Humidity_S.txt")).getInnerHumidity());
     	sensorData.put("OuterHumidity", ((HumiditySensor) Main.deserialization("Humidity_S.txt")).getOuterHumidity());
+    	sensorData.put("LeafWetness", (double) ((LeafWetnessSensor) Main.deserialization("LeafWetness_S.txt")).getLeafWetness());
+    	sensorData.put("SoilMoisture", ((SoilMoistureSensor) Main.deserialization("SoilMoisture_S.txt")).getSoilMoisture());
     	
+    	sensorData.put("Barometer", 0.0);
     	sensorData.put("Evotranspiration", 0.0);
-    	sensorData.put("LeafWetness", 0.0);
-    	sensorData.put("SoilMoisture", 0.0);
     	sensorData.put("Dewpoint", 0.0);
     	sensorData.put("WindChill", 0.0);
     	sensorData.put("HeatIndex", 0.0);
+    	
+    	//System.out.println(sensorData.get("OuterHumidity"));
     }    
     
     
@@ -149,9 +156,12 @@ public class IntegratedSensorSuite extends Thread implements Serializable {
      */
     private void startSensors() {
     	myHumiditySensor.start();
-    	/*
-    	 * other sensors here
-    	 */
+    	myAnemometerSensor.start();
+        myLeafWetnessSensor.start();
+        myRainCollectorSensor.start();
+        mySoilMoistureSensor.start();
+        myTemperatureSensor.start();
+        myUVSensor.start();
     }
     
     /**
@@ -167,7 +177,7 @@ public class IntegratedSensorSuite extends Thread implements Serializable {
 			public void run() {
 				updateData();
 				enableSensors();
-				System.out.println(sensorData.get("OuterHumidity"));
+				//System.out.println(sensorData.get("OuterHumidity"));
 			}
 		}, 0, 3000);	
 	
