@@ -7,7 +7,7 @@ import application.Main;
 /**
  * This is a temperature sensor.
  * @author Karnveer Gill
- * @version 1 - July 2020
+ * @version July 2020 - borrowing code from Group 6
  */
 public class TemperatureSensor extends Thread implements Serializable {
 	/**

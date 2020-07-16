@@ -6,7 +6,7 @@ import application.Main;
 /**
  * This represents a humidity sensor. 
  * @author Karnveer Gill & Albert Lin
- * @version 1 - July 2020
+ * @version 1 - July 2020 - borrowing code from Group 6
  */
 public class HumiditySensor extends Thread implements Serializable  {
 	/**

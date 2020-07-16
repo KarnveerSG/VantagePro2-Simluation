@@ -6,6 +6,7 @@ import application.Main;
 /**
  * This is a UV sensor
  * @author Karnveer Gill
+ * @version July 2020 - borrowing code from Group 6
  */
 public class UVSensor extends Thread implements Serializable {
 	/**
