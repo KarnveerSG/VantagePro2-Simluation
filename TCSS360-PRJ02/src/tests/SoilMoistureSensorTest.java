@@ -53,8 +53,9 @@ class SoilMoistureSensorTest {
 		double high = 200.0;
 		double low = 0.0;
 		
-		for(int i = 0; i < 100000; i++) {
-			inner1 = test.getSoilMoisture();
+		for(int i = 0; i < 650; i++) {
+			inner1 = test.getSoilMoisture();        //Sensor timer is 90 seconds to specification
+			TimeUnit.MILLISECONDS.sleep(90);		//Change the TESTINTERVAL in sensor to 1 test quickly**
 		assertTrue(inner1 >= low);
 		assertTrue(inner1 <= high);
 		}
@@ -70,6 +71,7 @@ class SoilMoistureSensorTest {
 		test.cancel();
 		TimeUnit.SECONDS.sleep(1);
 		assertTrue(test.isAlive());
+		test.restart();				//if no restart here, other tests get affected.
 	}
 	
 	/**

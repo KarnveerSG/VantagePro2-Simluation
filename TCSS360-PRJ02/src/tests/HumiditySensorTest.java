@@ -49,13 +49,14 @@ class HumiditySensorTest {
 	 * This tests if the inner humidity is within range.
 	 */
 	@Test
-	void testGetInnerHumidity() {
+	void testGetInnerHumidity() throws InterruptedException {
 		double inner1 = test.getInnerHumidity();
 		double high = 100.0;
 		double low = 0.0;
 		
-		for(int i = 0; i < 100000; i++) {
-			inner1 = test.getInnerHumidity();
+		for(int i = 0; i < 500; i++) {
+			inner1 = test.getInnerHumidity();    //Sensor timer is 60 seconds to specification
+			TimeUnit.MILLISECONDS.sleep(60);		//Change TESTINTERVAL in sensor to 1 to test quickly**
 		assertTrue(inner1 >= low);
 		assertTrue(inner1 <= high);
 		}
@@ -65,13 +66,14 @@ class HumiditySensorTest {
 	 * This tests if the outer humidity is within range.
 	 */
 	@Test
-	void testGetOuterHumidity() {
+	void testGetOuterHumidity() throws InterruptedException {
 		double outer1 = test.getOuterHumidity();
 		double high = 100.0;
 		double low = 0.0;
 		
-		for(int i = 0; i < 100000; i++) {
-			outer1 = test.getOuterHumidity();
+		for(int i = 0; i < 500; i++) {
+			outer1 = test.getOuterHumidity();       //Sensor timer is 60 seconds to specification
+			TimeUnit.MILLISECONDS.sleep(60);		//Change TESTINTERVAL in sensor to 1 to test quickly**
 		assertTrue(outer1 >= low);
 		assertTrue(outer1 <= high);
 		}
@@ -87,6 +89,7 @@ class HumiditySensorTest {
 		test.cancel();
 		TimeUnit.SECONDS.sleep(1);
 		assertTrue(test.isAlive());
+		test.restart();				//if no restart here, other tests get affected.
 	}
 	
 	/**

@@ -49,13 +49,14 @@ class UVSensorTest {
 	 * This tests if the UV radiation index is within range.
 	 */
 	@Test
-	void testGetUVIndex() {
+	void testGetUVIndex() throws InterruptedException {
 		double inner1 = test.getUVIndex();
 		double high = 16.0;
 		double low = 0.0;
 		
-		for(int i = 0; i < 100000; i++) {
-			inner1 = test.getUVIndex();
+		for(int i = 0; i < 500; i++) {
+			inner1 = test.getUVIndex();  			//Sensor timer is 60 seconds to specification
+			TimeUnit.MILLISECONDS.sleep(60);		//Change TESTINTERVAL in sensor to 1 to test quickly**
 		assertTrue(inner1 >= low);
 		assertTrue(inner1 <= high);
 		}
@@ -65,13 +66,14 @@ class UVSensorTest {
 	 * This tests if the UV radiation dose is within range.
 	 */
 	@Test
-	void testGetUVDose() {
+	void testGetUVDose() throws InterruptedException {
 		double outer1 = test.getUVDose();
 		double high = 199.0;
 		double low = 0.0;
 		
-		for(int i = 0; i < 100000; i++) {
-			outer1 = test.getUVDose();
+		for(int i = 0; i < 500; i++) {
+			outer1 = test.getUVDose(); 				//Sensor timer is 60 seconds to specification
+			TimeUnit.MILLISECONDS.sleep(60);		//Change TESTINTERVAL in sensor to 1 to test quickly**
 		assertTrue(outer1 >= low);
 		assertTrue(outer1 <= high);
 		}
@@ -87,6 +89,7 @@ class UVSensorTest {
 		test.cancel();
 		TimeUnit.SECONDS.sleep(1);
 		assertTrue(test.isAlive());
+		test.restart();				//if no restart here, other tests get affected.
 	}
 	
 	/**

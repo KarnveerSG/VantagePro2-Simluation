@@ -45,6 +45,11 @@ public class HumiditySensor extends Thread implements Serializable  {
 	private final double MAXHUMIDITY = 100;
 	
 	/**
+	 * Used to speed up testing, 1 for testing, 1000 for normal usage.
+	 */
+	private final int TESTINTERVAL = 1000;
+	
+	/**
 	 * This is the constructor for the humidity sensor.
 	 */
 	public HumiditySensor() {
@@ -98,7 +103,7 @@ public class HumiditySensor extends Thread implements Serializable  {
 				//System.out.println("Humidity Update ding");
 				Main.serialization("Humidity_S.txt", this);
 				
-				Thread.sleep(updateInterval * 1000);
+				Thread.sleep(updateInterval * TESTINTERVAL);
 			} else {
 				Thread.sleep(1000);
 			}

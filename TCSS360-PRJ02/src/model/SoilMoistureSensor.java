@@ -41,6 +41,11 @@ public class SoilMoistureSensor extends Thread implements Serializable  {
 	private final double MAXMOISTURE = 200;
 	
 	/**
+	 * Used to speed up testing, 1 for testing, 1000 for normal usage.
+	 */
+	private final int TESTINTERVAL = 1000;
+	
+	/**
 	 * This is the constructor for the soil moisture sensor.
 	 */
 	public SoilMoistureSensor() {
@@ -75,7 +80,7 @@ public class SoilMoistureSensor extends Thread implements Serializable  {
 			if(!cancel) {
 				setSoilMoisture();
 				Main.serialization("SoilMoisture_S.txt", this);
-				Thread.sleep(updateInterval * 1000);
+				Thread.sleep(updateInterval * TESTINTERVAL);
 			} else {
 				Thread.sleep(1000);
 			}

@@ -46,31 +46,35 @@ class TemperatureSensorTest {
 
 	/**
 	 * This tests if the inner temperature is within range.
+	 * @throws InterruptedException 
 	 */
 	@Test
-	void testGetInnerTemperature() {
+	void testGetInnerTemperature() throws InterruptedException {
 		double inner1 = test.getInnerTemperature();
 		double high = 140.0;
 		double low = 32.0;
 		
-		for(int i = 0; i < 100000; i++) {
-			inner1 = test.getInnerTemperature();
-		assertTrue(inner1 >= low);
+		for(int i = 0; i < 500; i++) {
+			inner1 = test.getInnerTemperature();	//Sensor timer is 60 seconds to specification
+			TimeUnit.MILLISECONDS.sleep(60);		//Change the TESTINTERVAL in sensor to 1 test quickly**
+		assertTrue(inner1 >= low);					
 		assertTrue(inner1 <= high);
 		}
 	}
 
 	/**
 	 * This tests if the outer temperature is within range.
+	 * @throws InterruptedException 
 	 */
 	@Test
-	void testGetOuterTemperature() {
+	void testGetOuterTemperature() throws InterruptedException {
 		double outer1 = test.getOuterTemperature();
 		double high = 150.0;
 		double low = -40.0;
 		
-		for(int i = 0; i < 100000; i++) {
-			outer1 = test.getOuterTemperature();
+		for(int i = 0; i < 1000; i++) {
+			outer1 = test.getOuterTemperature();	//Sensor timer is 10 seconds to specification
+			TimeUnit.MILLISECONDS.sleep(10);		//Change TESTINTERVAL in sensor to 1 to test quickly**
 		assertTrue(outer1 >= low);
 		assertTrue(outer1 <= high);
 		}
@@ -86,6 +90,7 @@ class TemperatureSensorTest {
 		test.cancel();
 		TimeUnit.SECONDS.sleep(1);
 		assertTrue(test.isAlive());
+		test.restart();				//if no restart here, other tests get affected.
 	}
 	
 	/**

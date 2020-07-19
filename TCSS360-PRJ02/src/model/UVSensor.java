@@ -53,6 +53,12 @@ public class UVSensor extends Thread implements Serializable {
 	 * This is the maximum for the UV radiation index range.
 	 */
 	private final double MAXINDEX = 16;
+	
+	/**
+	 * Used to speed up testing, 1 for testing, 1000 for normal usage.
+	 */
+	private final int TESTINTERVAL = 1000;
+
 
 	/**
 	 * This is the constructor for the UV sensor.
@@ -106,7 +112,7 @@ public class UVSensor extends Thread implements Serializable {
 				setUVDose();
 				setUVIndex();
 				Main.serialization("UV_S.txt", this);
-				Thread.sleep(updateInterval * 1000);
+				Thread.sleep(updateInterval * TESTINTERVAL);
 				//System.out.println("Sensor: " + getUVDose() + getUVIndex());
 			} else {
 				Thread.sleep(1000);
