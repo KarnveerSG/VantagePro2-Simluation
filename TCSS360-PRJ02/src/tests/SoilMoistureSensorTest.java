@@ -46,9 +46,10 @@ class SoilMoistureSensorTest {
 
 	/**
 	 * This tests if the inner soil moisture is within range.
+	 * @throws InterruptedException 
 	 */
 	@Test
-	void testGetSoilMoisture() {
+	void testGetSoilMoisture() throws InterruptedException {
 		double inner1 = test.getSoilMoisture();
 		double high = 200.0;
 		double low = 0.0;

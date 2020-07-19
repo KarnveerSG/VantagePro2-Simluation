@@ -16,7 +16,6 @@ import application.Main;
  * supposed to be read. Transfer between sensors, ISS, and GUI will be serialized.
  * 
  * @author Andrew Josten
- * Borrowing some code from group 1's ISS
  *
  */
 public class IntegratedSensorSuite extends Thread implements Serializable {
@@ -34,7 +33,7 @@ public class IntegratedSensorSuite extends Thread implements Serializable {
 	/**
 	 *  Timer which can be cancel() by Main or Test classes 
 	 */
-	public static Timer timer;
+	public transient static Timer timer;
 	
 	/**
 	 * Altitude at startup
@@ -55,7 +54,7 @@ public class IntegratedSensorSuite extends Thread implements Serializable {
      * for the GUI to collect and read from.
      * NOTE: Wind direction will be rendered in degrees (0-359)
      */
-    public HashMap<String, Double> sensorData;
+    public HashMap<String, Double> sensorData; 
     
     /**
      * Constructs the ISS which in turn constructs the sensor classes.
@@ -123,7 +122,6 @@ public class IntegratedSensorSuite extends Thread implements Serializable {
     	/*Wind Chill
     	 * param: outside air temp, wind speed (Imperial units)
     	 * W = 35.74 + 0.6215*T - 35.75 * (V^0.16) + 0.4275 * (V^0.16)
-    	 * (Note: include units accountence later? If there's time)
     	 */
     	double V = dataAnemometer.getWindSpeed();
     	double T = dataTemp.getOuterTemperature();
@@ -165,8 +163,8 @@ public class IntegratedSensorSuite extends Thread implements Serializable {
     	/*Barometric pressure
     	 * param:outside air, outside humidity, elevation, atmospheric pressure
     	 * 
-    	 * Note that atmospheric pressure is a sensor located on the console main circuit board according
-    	 * to documentation. We'll implement  pressure sensing when GUI is up. In the mean time,
+    	 * Note that atmospheric pressure is a sensor located on the main circuit board according
+    	 * to documentation. We'll implement  pressure sensing RNG soon. In the mean time,
     	 * we'll use 14.35 PSI (approx. PSI at 200 ft).
     	 * 
     	 * Psl = Ps * (R)
@@ -178,7 +176,7 @@ public class IntegratedSensorSuite extends Thread implements Serializable {
     	int a = alt;
     	sensorData.put("Barometer", Ps * (Math.pow(10, ( Math.exp(a / (122.8943111 * ( T + 460 + (11* a/8000))))))));
     	
-    	/*Evotranspiration
+    	/*Evotranspiration / UV index / UVDose
     	 * Note: requires optional solar radiation sensor. We've already included several optional
     	 * sensors at this point. If we have the time to implement radiation sensor and ET, we will, but
     	 * this currently has _lower priority_.
@@ -191,9 +189,41 @@ public class IntegratedSensorSuite extends Thread implements Serializable {
     	 * 
     	 */	
     	sensorData.put("Evotranspiration", 0.0);
-    }    
+    	
+    	//Check GUI_S.txt and convert data if need be.
+    	convertData(false);
+    	//covertData(Main.deserialization("GUI_S.txt").getSystem());
+    }   
     
     /**
+     * This method changes the data from imperial to metric using a boolean.
+     * @param m True if we want metric
+     */
+    private void convertData(boolean m) {
+		//Convert to metric
+		if(m) {
+			sensorData.put("RainFall", (sensorData.get("RainFall")) * 25.4);
+	    	sensorData.put("RainRate", (sensorData.get("RainRate")) * 25.4);
+	    	sensorData.put("WindSpeed", (sensorData.get("WindSpeed") * 1.60934));
+	    	//sensorData.put("WindDirection", 0.0);
+	    	sensorData.put("InnerTemp", (sensorData.get("InnerTemp") -32) / 1.8);
+	    	sensorData.put("OuterTemp", (sensorData.get("OuterTemp") -32) / 1.8);
+	    	//sensorData.put("UVIndex", 0.0);
+	    	//sensorData.put("UVDose", 0.0);
+	    	//sensorData.put("InnerHumidity", 0.0);
+	    	//sensorData.put("OuterHumidity", 0.0);    	
+	    	sensorData.put("Barometer", sensorData.get("Barometer") * 6894.76);
+	    	//sensorData.put("LeafWetness", 0.0);
+	    	//sensorData.put("SoilMoisture", 0.0);
+	    	sensorData.put("Dewpoint", (sensorData.get("Dewpoint") -32) / 1.8);
+	    	sensorData.put("WindChill", (sensorData.get("WindChill") -32) / 1.8);
+	    	sensorData.put("HeatIndex", (sensorData.get("HeatIndex") -32) / 1.8);  
+	    	
+	    	//T(°C) = (T(°F) - 32) / 1.8
+		}		
+	}
+
+	/**
      * enables/disables sensors according to a map of sensornames and booleans from the GUI
      *  
      */
@@ -257,7 +287,10 @@ public class IntegratedSensorSuite extends Thread implements Serializable {
 			public void run() {
 				updateData();
 				enableSensors();
-				//System.out.println(sensorData.get("OuterHumidity"));
+				//Serialize for the use of GUI. Only serializes the data the GUI should need
+				Main.serialization("ISS_S.txt", sensorData);
+				
+				//System.out.println(sensorData.get("OuterTemp"));
 			}
 		}, 0, 3000);	
     }	
