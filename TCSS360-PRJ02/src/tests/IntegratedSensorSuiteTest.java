@@ -7,6 +7,7 @@ import java.util.HashMap;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import application.Main;
 import model.IntegratedSensorSuite;
 
 class IntegratedSensorSuiteTest {
@@ -33,6 +34,11 @@ class IntegratedSensorSuiteTest {
 		
 		ISSTest.convertData(true);
 		//ISSTest.enableSensors();
+		
+		HashMap<String, Boolean> e = new HashMap<String, Boolean>();
+		e.put("UV", true);
+		e.put("Humidty", false);
+		ISSTest.enableSensors(e);
 		
 		ISSTest.start();
 		

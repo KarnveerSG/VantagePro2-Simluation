@@ -229,32 +229,36 @@ public class IntegratedSensorSuite extends Thread implements Serializable {
      * enables/disables sensors according to a map of sensornames and booleans from the GUI
      *  
      */
-    private void enableSensors(HashMap<String, Boolean> m) {
-		HashMap<String, Boolean> enables = m;
-
-    	System.out.println(enables == null);
-    	Set<String> sensorList = new HashSet<>(enables.keySet());
+    public void enableSensors(HashMap<String, Boolean> m) {
+    	//System.out.println(m == null);
+    	Set<String> sensorList = new HashSet<>(m.keySet());
     	
     	//turn off
     	for(String s: sensorList) {
-    		if (!enables.get(s)) {
+    		if (!m.get(s)) {
     			if(s.equals("Humidity")) {
     				myHumiditySensor.cancel();
+    				System.out.println("Humidity Disabled");
     			}
     			else if(s.equals("Temperature")){
     				myTemperatureSensor.cancel();
+    				System.out.println("Temp Disabled");
     			}
 				else if(s.equals("Anemometer")){
 					myAnemometerSensor.cancel();
+					System.out.println("Anemometer Disabled");
 				}
 				else if(s.equals("LeafWetness")){
 					myLeafWetnessSensor.cancel();
+					System.out.println("LeafWetness Disabled");
 				}
 				else if(s.equals("SoilMoisture")){
 					mySoilMoistureSensor.cancel();
+					System.out.println("SoilMoisture Disabled");
 				}
 				else if(s.equals("RainCollector")){
 					myRainCollectorSensor.cancel();
+					System.out.println("RainCollector Disabled");
     			}
 				else if(s.equals("UV")){
 					myUVSensor.cancel();
@@ -262,29 +266,35 @@ public class IntegratedSensorSuite extends Thread implements Serializable {
 				else {
 					System.out.println("Not a sensor");
 				}
-    			
     		}
     		//turn on
     		else {
     			if(s.equals("Humidity")) {
     				myHumiditySensor.restart();
+    				//System.out.println("Humid Enabled");
     			}
     			else if(s.equals("Temperature")){
     				myTemperatureSensor.restart();
+    				//System.out.println("Temp Enabled");
     			}
 				else if(s.equals("Anemometer")){
 					myAnemometerSensor.restart();
+					System.out.println("Anemometer Enabled");
 				}
 				else if(s.equals("LeafWetness")){
 					myLeafWetnessSensor.restart();
+					//System.out.println("LeafWetness Enabled");
 				}
 				else if(s.equals("SoilMoisture")){
 					mySoilMoistureSensor.restart();
+					//System.out.println("Soil Enabled");
 				}
 				else if(s.equals("RainCollector")){
 					myRainCollectorSensor.restart();
+					//System.out.println("RainCollector Enabled");
     			}
 				else if(s.equals("UV")){
+					//System.out.println("UV Enabled");
 					myUVSensor.restart();
     			}
 				else {

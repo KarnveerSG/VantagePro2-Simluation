@@ -168,7 +168,7 @@ public class Compass extends JFrame {
          * @param angle The angle to rotate the needle by.
          */
         public void setRotationAngle(int angle) {
-            rotationAngle = angle;
+            rotationAngle = Math.toRadians(angle);
         }
         
         /**

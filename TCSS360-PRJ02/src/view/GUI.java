@@ -266,6 +266,7 @@ public class GUI extends Thread {
 		
 		// Update text
 		if (!isMetric) { // If not metric
+			//System.out.println(label2 == null);
 			label2.setText("Rainfall: " + df.format(sensorData.get("RainFall")) + " in.");
 			label3.setText("Rain rate: " + df.format(sensorData.get("RainRate")) + " in/day.");
 			label4.setText("Wind speed: " + df.format(sensorData.get("WindSpeed")) + " mph.");

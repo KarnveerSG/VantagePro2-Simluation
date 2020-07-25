@@ -9,6 +9,9 @@ import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
 
 import model.*;
+//import view.GUI;
+//import view.GUI;
+import view.GUI;
 
 public class Main {
 
@@ -17,7 +20,7 @@ public class Main {
 		new Thread(new IntegratedSensorSuite(1, 300)).start();
 		
 		//Start GUI on its own thread
-		//new Thread(new GUI())).start();
+		new Thread(new GUI()).start();
 	}
 	
 	
