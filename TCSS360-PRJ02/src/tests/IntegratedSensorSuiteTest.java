@@ -31,6 +31,9 @@ class IntegratedSensorSuiteTest {
 		assertEquals(ISSTest.getTransmitterId(), 3);
 		ISSTest.updateData();
 		
+		ISSTest.convertData(true);
+		//ISSTest.enableSensors();
+		
 		ISSTest.start();
 		
 		ISSTest.interrupt();

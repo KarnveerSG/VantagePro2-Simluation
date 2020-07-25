@@ -54,7 +54,7 @@ public class IntegratedSensorSuite extends Thread implements Serializable {
      * for the GUI to collect and read from.
      * NOTE: Wind direction will be rendered in degrees (0-359)
      */
-    public HashMap<String, Double> sensorData; 
+    public HashMap<String, Double> sensorData;
     
     /**
      * Constructs the ISS which in turn constructs the sensor classes.
@@ -92,7 +92,9 @@ public class IntegratedSensorSuite extends Thread implements Serializable {
     	sensorData.put("SoilMoisture", 0.0);
     	sensorData.put("Dewpoint", 0.0);
     	sensorData.put("WindChill", 0.0);
-    	sensorData.put("HeatIndex", 0.0);    	
+    	sensorData.put("HeatIndex", 0.0);
+    	
+    	    	
     }
     
     /**
@@ -199,7 +201,7 @@ public class IntegratedSensorSuite extends Thread implements Serializable {
      * This method changes the data from imperial to metric using a boolean.
      * @param m True if we want metric
      */
-    private void convertData(boolean m) {
+    public void convertData(boolean m) {
 		//Convert to metric
 		if(m) {
 			sensorData.put("RainFall", (sensorData.get("RainFall")) * 25.4);
@@ -227,25 +229,70 @@ public class IntegratedSensorSuite extends Thread implements Serializable {
      * enables/disables sensors according to a map of sensornames and booleans from the GUI
      *  
      */
-    private void enableSensors() {
-    	//get map from GUI
-    	HashMap<String, Boolean> enables = new HashMap<String, Boolean>();
+    private void enableSensors(HashMap<String, Boolean> m) {
+		HashMap<String, Boolean> enables = m;
+
+    	System.out.println(enables == null);
     	Set<String> sensorList = new HashSet<>(enables.keySet());
+    	
+    	//turn off
     	for(String s: sensorList) {
     		if (!enables.get(s)) {
-    			//put a bunch of if/switch statements here that will 
-    		}
-    		else {
-    			//if enable is true, make sure the thread is still running. if not, restart it
-    			//sensorname.isInterrupted 
-    				//restart that thread: 
+    			if(s.equals("Humidity")) {
+    				myHumiditySensor.cancel();
+    			}
+    			else if(s.equals("Temperature")){
+    				myTemperatureSensor.cancel();
+    			}
+				else if(s.equals("Anemometer")){
+					myAnemometerSensor.cancel();
+				}
+				else if(s.equals("LeafWetness")){
+					myLeafWetnessSensor.cancel();
+				}
+				else if(s.equals("SoilMoisture")){
+					mySoilMoistureSensor.cancel();
+				}
+				else if(s.equals("RainCollector")){
+					myRainCollectorSensor.cancel();
+    			}
+				else if(s.equals("UV")){
+					myUVSensor.cancel();
+    			}
+				else {
+					System.out.println("Not a sensor");
+				}
     			
-    			//note: threads appear to not have an easy way of interrupting and restarting. maybe have ISS block it instead and just let sensors run?
+    		}
+    		//turn on
+    		else {
+    			if(s.equals("Humidity")) {
+    				myHumiditySensor.restart();
+    			}
+    			else if(s.equals("Temperature")){
+    				myTemperatureSensor.restart();
+    			}
+				else if(s.equals("Anemometer")){
+					myAnemometerSensor.restart();
+				}
+				else if(s.equals("LeafWetness")){
+					myLeafWetnessSensor.restart();
+				}
+				else if(s.equals("SoilMoisture")){
+					mySoilMoistureSensor.restart();
+				}
+				else if(s.equals("RainCollector")){
+					myRainCollectorSensor.restart();
+    			}
+				else if(s.equals("UV")){
+					myUVSensor.restart();
+    			}
+				else {
+					System.out.println("Not a sensor");
+				}
     		}
     	}
-    }
-    
-    
+    }    
     
     /** 
      * Returns the transmitter ID. 
@@ -285,12 +332,24 @@ public class IntegratedSensorSuite extends Thread implements Serializable {
     	timer = new Timer();
 		timer.scheduleAtFixedRate(new TimerTask() {
 			public void run() {
+				//update data from sensors
 				updateData();
-				enableSensors();
+				
+				
+				@SuppressWarnings("unchecked")
+				HashMap<String, Boolean> enabledSensors = ((HashMap<String, Boolean>) Main.deserialization("GUI_S.txt"));
+				if(enabledSensors != null) {
+					enableSensors(enabledSensors);
+				}
+				
+				
+				
+				//Deserialize GUI stuff for sensor enabling and metric exchange
+				boolean metric = ((boolean) Main.deserialization("GUI_M.txt"));
+				convertData(metric);
+				
 				//Serialize for the use of GUI. Only serializes the data the GUI should need
 				Main.serialization("ISS_S.txt", sensorData);
-				
-				//System.out.println(sensorData.get("OuterTemp"));
 			}
 		}, 0, 3000);	
     }	
