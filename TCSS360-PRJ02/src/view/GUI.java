@@ -87,12 +87,12 @@ public class GUI extends Thread {
 	 * The constructor class that initializes the history storage for rainfall
 	 * and starts the initialization of the GUI
 	 */
-	public GUI() {
-		
+	public GUI() {		
 		isMetric = false;
 		oldCompass = 0;
 		
 		history = new ArrayList<Double>();
+		map = new HashMap<String, Boolean>();
 		
 		// Modified from FrameDemo.java on the Oracle website.
 		javax.swing.SwingUtilities.invokeLater(new Runnable() {
@@ -123,9 +123,8 @@ public class GUI extends Thread {
         label1 = new JLabel("");
         box = new JCheckBox("Metric");
         box.setHorizontalAlignment(SwingConstants.CENTER);
-        box.setBounds(75,150,125,50);
+        box.setBounds(50,50,125,50);
         box.addActionListener(theEvent -> {
-        	//IntegratedSensorSuite.convertData(box.isSelected());
         	isMetric = box.isSelected();
         });
         label1.add(box);        
@@ -169,9 +168,9 @@ public class GUI extends Thread {
         label19 = new JLabel("");
         JCheckBox box2 = new JCheckBox("Disable Rain Sensor");
         //box2.setHorizontalAlignment(SwingConstants.CENTER);
-        box2.setBounds(75,150,125,50);
+        box2.setBounds(50,50,125,50);
         box2.addActionListener(theEvent -> {
-        	map.put("RainFall", !box2.isSelected());
+        	map.put("RainCollector", !box2.isSelected());
         });
         label19.add(box2);
         frame.add(label19);
@@ -179,34 +178,34 @@ public class GUI extends Thread {
         label20 = new JLabel("");
         JCheckBox box3 = new JCheckBox("Disable Humidity Sensor");
        // box3.setHorizontalAlignment(SwingConstants.CENTER);
-        box3.setBounds(75,150,125,50);
+        box3.setBounds(50,50,125,50);
         box3.addActionListener(theEvent -> {
-        	map.put("InnerHumidity", !box3.isSelected());
+        	map.put("Humidity", !box3.isSelected());
         });
         label20.add(box3);
         frame.add(label20);
         label21 = new JLabel("");
         JCheckBox box4 = new JCheckBox("Disable Temp Sensor");
         //box4.setHorizontalAlignment(SwingConstants.CENTER);
-        box4.setBounds(75,150,125,50);
+        box4.setBounds(50,50,125,50);
         box4.addActionListener(theEvent -> {
-        	map.put("InnerTemp", !box4.isSelected());
+        	map.put("Temperature", !box4.isSelected());
         });
         label21.add(box4);
         frame.add(label21);
         label22 = new JLabel("");
         JCheckBox box5 = new JCheckBox("Disable Anemometer");
         //box5.setHorizontalAlignment(SwingConstants.CENTER);
-        box5.setBounds(75,150,125,50);
+        box5.setBounds(50,50,125,50);
         box5.addActionListener(theEvent -> {
-        	map.put("WindSpeed", !box5.isSelected());
+        	map.put("Anemometer", !box5.isSelected());
         });
         label22.add(box5);
         frame.add(label22);
         label23 = new JLabel("");
         JCheckBox box6 = new JCheckBox("Disable Leaf Sensor");
         //box6.setHorizontalAlignment(SwingConstants.CENTER);
-        box6.setBounds(75,150,125,50);
+        box6.setBounds(50,50,125,50);
         box6.addActionListener(theEvent -> {
         	map.put("LeafWetness", !box6.isSelected());
         });
@@ -215,7 +214,7 @@ public class GUI extends Thread {
         label24 = new JLabel("");
         JCheckBox box7 = new JCheckBox("Disable Soil Sensor");
         //box7.setHorizontalAlignment(SwingConstants.CENTER);
-        box7.setBounds(75,150,125,50);
+        box7.setBounds(50,50,125,50);
         box7.addActionListener(theEvent -> {
         	map.put("SoilMoisture", !box7.isSelected());
         });
@@ -224,9 +223,9 @@ public class GUI extends Thread {
         label25 = new JLabel("");
         JCheckBox box8 = new JCheckBox("Disable UV Sensor");
         //box8.setHorizontalAlignment(SwingConstants.CENTER);
-        box8.setBounds(75,150,125,50);
+        box8.setBounds(50,50,125,50);
         box8.addActionListener(theEvent -> {
-        	map.put("UVIndex", !box8.isSelected());
+        	map.put("UV", !box8.isSelected());
         });
         label25.add(box8);        
         frame.add(label25);

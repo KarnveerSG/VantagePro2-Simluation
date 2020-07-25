@@ -333,16 +333,13 @@ public class IntegratedSensorSuite extends Thread implements Serializable {
 		timer.scheduleAtFixedRate(new TimerTask() {
 			public void run() {
 				//update data from sensors
-				updateData();
-				
+				updateData();			
 				
 				@SuppressWarnings("unchecked")
 				HashMap<String, Boolean> enabledSensors = ((HashMap<String, Boolean>) Main.deserialization("GUI_S.txt"));
 				if(enabledSensors != null) {
 					enableSensors(enabledSensors);
-				}
-				
-				
+				}				
 				
 				//Deserialize GUI stuff for sensor enabling and metric exchange
 				boolean metric = ((boolean) Main.deserialization("GUI_M.txt"));
