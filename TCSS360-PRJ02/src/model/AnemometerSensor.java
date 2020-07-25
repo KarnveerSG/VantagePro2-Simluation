@@ -1,6 +1,7 @@
 package model;
 
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.Random;
 
 import application.Main;
@@ -152,6 +153,9 @@ public class AnemometerSensor extends Thread implements Serializable {
 	 */
 	public void run() {
 		//thread always runs
+		//HashMap<String, Double> sensorData = new HashMap<>(((HashMap<String, Double>) Main.deserialization("ISS_S.txt"))); 
+		
+		
 		while (true) {
 			try {
 				//updates data in intervals if not paused
