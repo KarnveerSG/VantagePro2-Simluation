@@ -319,7 +319,7 @@ public class GUI extends Thread {
 		else this.update();
 		
 		// Update Compass
-		c.c.setRotationAngle(sensorData.get("WindDirection").intValue() - oldCompass);  // Calculation for angle adjust may need work.
+		c.c.setRotationAngle(sensorData.get("WindDirection").intValue() /*- oldCompass*/);  // Calculation for angle adjust may need work.
 		oldCompass = sensorData.get("WindDirection").intValue();
 		c.repaint();
 		
