@@ -103,10 +103,23 @@ public class IntegratedSensorSuite extends Thread implements Serializable {
     public void updateData() {
     	//Some new objects constructed to hold deserial data if they are used in other calculations
     	
-    	TemperatureSensor dataTemp = ((TemperatureSensor) Main.deserialization("Temperature_S.txt"));
-    	HumiditySensor dataHum = ((HumiditySensor) Main.deserialization("Humidity_S.txt"));
+    	//TemperatureSensor dataTemp = ((TemperatureSensor) Main.deserialization("Temperature_S.txt"));
+    	TemperatureSensor dataTemp;
+    	try {
+    		dataTemp = ((TemperatureSensor) Main.deserialization("Temperature_S.txt"));
+    	}
+    	catch(Exception e){
+    		dataTemp = new TemperatureSensor();
+    	}
     	
-    	//This is like so because the Anemometer sometimes has an issue and can't be cast
+    	HumiditySensor dataHum;
+    	try {
+    		dataHum = ((HumiditySensor) Main.deserialization("Humidity_S.txt"));
+    	}
+    	catch(Exception e) {
+    		dataHum = new HumiditySensor();
+    	}
+    	
     	AnemometerSensor dataAnemometer;
     	try {
     		dataAnemometer = ((AnemometerSensor) Main.deserialization("Anemometer_S.txt"));
@@ -117,18 +130,51 @@ public class IntegratedSensorSuite extends Thread implements Serializable {
     	
     	//AnemometerSensor dataAnemometer = ((AnemometerSensor) Main.deserialization("Anemometer_S.txt"));
     	
-    	sensorData.put("RainFall", ((RainCollectorSensor) Main.deserialization("RainCollector_S.txt")).getRainFall());
-    	sensorData.put("RainRate", ((RainCollectorSensor) Main.deserialization("RainCollector_S.txt")).getRainRate());
+    	
+    	try {
+    		sensorData.put("RainFall", ((RainCollectorSensor) Main.deserialization("RainCollector_S.txt")).getRainFall());
+        	sensorData.put("RainRate", ((RainCollectorSensor) Main.deserialization("RainCollector_S.txt")).getRainRate());
+    	}
+    	catch(Exception e) {
+    		
+    	}
+    	
     	sensorData.put("WindSpeed", dataAnemometer.getWindSpeed());
     	sensorData.put("WindDirection", (double) dataAnemometer.getWindDirection());
-    	sensorData.put("InnerTemp", dataTemp.getInnerTemperature());
-    	sensorData.put("OuterTemp", dataTemp.getOuterTemperature());
-    	sensorData.put("UVIndex", ((UVSensor) Main.deserialization("UV_S.txt")).getUVIndex());
-    	sensorData.put("UVDose", ((UVSensor) Main.deserialization("UV_S.txt")).getUVDose());
+    	
+    	try {
+    		sensorData.put("InnerTemp", dataTemp.getInnerTemperature());
+        	sensorData.put("OuterTemp", dataTemp.getOuterTemperature());
+    	}
+    	catch(Exception e) {
+    		
+    	}
+    	
+    	//sensorData.put("UVIndex", ((UVSensor) Main.deserialization("UV_S.txt")).getUVIndex());
+    	//sensorData.put("UVDose", ((UVSensor) Main.deserialization("UV_S.txt")).getUVDose());
+    	try {
+    		sensorData.put("UVIndex", ((UVSensor) Main.deserialization("UV_S.txt")).getUVIndex());
+        	sensorData.put("UVDose", ((UVSensor) Main.deserialization("UV_S.txt")).getUVDose());
+    	}
+    	catch(Exception e) {
+    		
+    	}
     	sensorData.put("InnerHumidity", dataHum.getInnerHumidity());
     	sensorData.put("OuterHumidity", dataHum.getOuterHumidity());
-    	sensorData.put("LeafWetness", (double) ((LeafWetnessSensor) Main.deserialization("LeafWetness_S.txt")).getLeafWetness());
-    	sensorData.put("SoilMoisture", ((SoilMoistureSensor) Main.deserialization("SoilMoisture_S.txt")).getSoilMoisture());
+    	
+    	try {
+        	sensorData.put("LeafWetness", (double) ((LeafWetnessSensor) Main.deserialization("LeafWetness_S.txt")).getLeafWetness());
+    	}
+    	catch(Exception e) {
+    		
+    	}
+    	
+    	try {
+        	sensorData.put("SoilMoisture", ((SoilMoistureSensor) Main.deserialization("SoilMoisture_S.txt")).getSoilMoisture());
+    	}
+    	catch(Exception e) {
+    		
+    	}
     	
     	//Updates all the calculated variables as per the document "Derived Variables in Davis Weather Products"
     	

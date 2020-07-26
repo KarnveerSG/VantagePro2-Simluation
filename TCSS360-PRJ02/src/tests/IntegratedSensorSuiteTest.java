@@ -37,7 +37,7 @@ class IntegratedSensorSuiteTest {
 		
 		HashMap<String, Boolean> e = new HashMap<String, Boolean>();
 		e.put("UV", true);
-		e.put("Humidty", false);
+		e.put("Humidity", false);
 		ISSTest.enableSensors(e);
 		
 		ISSTest.start();
