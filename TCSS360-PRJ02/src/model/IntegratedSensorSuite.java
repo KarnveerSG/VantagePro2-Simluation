@@ -102,9 +102,20 @@ public class IntegratedSensorSuite extends Thread implements Serializable {
      */
     public void updateData() {
     	//Some new objects constructed to hold deserial data if they are used in other calculations
-    	AnemometerSensor dataAnemometer = ((AnemometerSensor) Main.deserialization("Anemometer_S.txt"));
+    	
     	TemperatureSensor dataTemp = ((TemperatureSensor) Main.deserialization("Temperature_S.txt"));
     	HumiditySensor dataHum = ((HumiditySensor) Main.deserialization("Humidity_S.txt"));
+    	
+    	//This is like so because the Anemometer sometimes has an issue and can't be cast
+    	AnemometerSensor dataAnemometer;
+    	try {
+    		dataAnemometer = ((AnemometerSensor) Main.deserialization("Anemometer_S.txt"));
+    	}
+    	catch(Exception e) {
+    		dataAnemometer = new AnemometerSensor();
+    	}
+    	
+    	//AnemometerSensor dataAnemometer = ((AnemometerSensor) Main.deserialization("Anemometer_S.txt"));
     	
     	sensorData.put("RainFall", ((RainCollectorSensor) Main.deserialization("RainCollector_S.txt")).getRainFall());
     	sensorData.put("RainRate", ((RainCollectorSensor) Main.deserialization("RainCollector_S.txt")).getRainRate());
