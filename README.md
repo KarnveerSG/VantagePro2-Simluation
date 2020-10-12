@@ -1,5 +1,5 @@
 # TCSS360-PRJ02
-TCSS 360 PRJ#02- Continuing the Vantage2Pro development
+TCSS 360 PRJ#02- Continuing the VantagePro2 development
 
 This program simulates the VantagePro2's integrated sensor suite and GUI. It allows for the switching between imperial and metric
 measurement as well as the abilitiy to disable sensor threads. Sensor data is updated at intervals determined by the documentation
