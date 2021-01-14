@@ -1,6 +1,6 @@
-### VantagePro2-Simulation
+# VantagePro2-Simulation
 
-# Description
+## Description
 
 This program simulates the VantagePro2's integrated sensor suite and GUI. It allows for the switching between imperial and metric
 measurement as well as the ability to disable sensor threads. Sensor data is updated at intervals determined by the documentation
@@ -8,18 +8,18 @@ measurement as well as the ability to disable sensor threads. Sensor data is upd
 
 Data transfer of data values between sensors, ISS, and GUI is done via serialization files (named in the convention of "[Name]_S.txt").
 
-# GUI
+## GUI
 
 There are 3 components to the GUI: Compass, Rainfall chart, and the Main GUI. The compass and rainfall chart are not interactable, 
 but Main GUI does. The Main GUI allows for conversion between metric and imperial and allows for individual sensors to be disabled. 
 
-# Compass
+## Compass
 ![Compass](https://user-images.githubusercontent.com/46460325/104662978-d1c3ba00-5680-11eb-88c6-23a886eade84.PNG)
 
-# Rainfall
+## Rainfall
 ![Rainfall](https://user-images.githubusercontent.com/46460325/104663082-194a4600-5681-11eb-95cf-049dcfc2cd43.PNG)
 
-# Main GUI
+## Main GUI
 This is where the metric/imperial switch is located for the user. 
 ![Metric Converter](https://user-images.githubusercontent.com/46460325/104663137-2f580680-5681-11eb-9a1d-939d67bf02a8.PNG)
 
